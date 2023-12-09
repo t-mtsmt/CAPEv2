@@ -36,7 +36,7 @@ idx_list = {
     10: "Copy file",
     11: "Startup value",
     12: "Hide file",
-    13: "Unknown13",
+    13: "Process injection",
     14: "Mutex",
     15: "Keylog flag",
     16: "Keylog path",
@@ -52,33 +52,33 @@ idx_list = {
     26: "Screenshot file",
     27: "Screenshot crypt",
     28: "Mouse option",
-    29: "Unknown29",
+    29: "Detect VMware",
     30: "Delete file",
-    31: "Unknown31",
-    32: "Unknown32",
-    33: "Unknown33",
-    34: "Unknown34",
-    35: "Unknown35",
+    31: "Detect VirtualBox",
+    32: "Detect Debuggers",
+    33: "Detect Process Monitor",
+    34: "Detect Process Explorer",
+    35: "Audio record",
     36: "Audio record time",
     37: "Audio path",
     38: "Audio folder",
-    39: "Unknown39",
-    40: "Unknown40",
+    39: "Disable UAC",
+    40: "Visibility mode",
     41: "Connect delay",
-    42: "Unknown42",
-    43: "Unknown43",
-    44: "Unknown44",
-    45: "Unknown45",
-    46: "Unknown46",
-    47: "Unknown47",
+    42: "Keylogger filter keywords",
+    43: "Clear cookies",
+    44: "Clear cookies delay",
+    45: "Clear only on first launch",
+    46: "UAC bypass",
+    47: "Detect analysis environments reaction",
     48: "Copy folder",
     49: "Keylog folder",
-    50: "Unknown50",
-    51: "Unknown51",
+    50: "Protect file and process",
+    51: "Protect registry entries",
     52: "Unknown52",
-    53: "Unknown53",
+    53: "Include mouse cursor in screenshots",
     54: "Keylog file max size",
-    55: "Unknown55",
+    55: "Log window timestamps",
     56: "TLS client certificate",
     57: "TLS client private key",
     58: "TLS server certificate",
@@ -102,6 +102,12 @@ setup_list = {
     6: "AppData",
     7: "User Profile",
     8: "Application path",
+}
+
+reaction_list = {
+    0: "None",
+    1: "Self-Close (terminate own process)",
+    2: "Self-Uninstall (erase itself completely from system)",
 }
 
 utf_16_string_list = ["Copy file", "Startup value", "Keylog file", "Take screenshot title", "Copy folder", "Keylog folder"]
@@ -182,6 +188,18 @@ def extract_config(filebuf):
                         p_data[idx_list[i]] = setup_list[cont[0]]
                 elif i in (56, 57, 58):
                     p_data[idx_list[i]] = base64.b64encode(cont)
+                elif i == 13:
+                    print(cont)
+                    if cont == b"0":
+                        p_data[idx_list[i]] = "No injection"
+                    elif cont == b"1":
+                        p_data[idx_list[i]] = "Inject default browser"
+                    else:
+                        p_data[idx_list[i]] = cont.decode() # Inject custom process
+                elif i == 42:
+                    p_data[idx_list[i]] = cont.decode("utf-16").strip("\x00")
+                elif i == 47:
+                    p_data[idx_list[i]] = reaction_list[int(chr(cont[0]))]
                 elif i == 0:
                     # various separators have been observed
                     separator = next((x for x in (b"|", b"\x1e", b"\xff\xff\xff\xff") if x in cont))

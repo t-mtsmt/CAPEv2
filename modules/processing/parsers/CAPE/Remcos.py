@@ -104,6 +104,12 @@ setup_list = {
     8: "Application path",
 }
 
+visibility_mode_list = {
+    0: "Visible",
+    1: "Visible Minimized",
+    2: "Invisible",
+}
+
 reaction_list = {
     0: "None",
     1: "Self-Close (terminate own process)",
@@ -189,13 +195,14 @@ def extract_config(filebuf):
                 elif i in (56, 57, 58):
                     p_data[idx_list[i]] = base64.b64encode(cont)
                 elif i == 13:
-                    print(cont)
                     if cont == b"0":
                         p_data[idx_list[i]] = "No injection"
                     elif cont == b"1":
                         p_data[idx_list[i]] = "Inject default browser"
                     else:
                         p_data[idx_list[i]] = cont.decode() # Inject custom process
+                elif i == 40:
+                    p_data[idx_list[i]] = visibility_mode_list[int(chr(cont[0]))]
                 elif i == 42:
                     p_data[idx_list[i]] = cont.decode("utf-16").strip("\x00")
                 elif i == 47:

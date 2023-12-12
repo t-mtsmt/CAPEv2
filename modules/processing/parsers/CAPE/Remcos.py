@@ -116,7 +116,7 @@ reaction_list = {
     2: "Self-Uninstall (erase itself completely from system)",
 }
 
-utf_16_string_list = ["Copy file", "Startup value", "Keylog file", "Take screenshot title", "Copy folder", "Keylog folder"]
+utf_16_string_list = ["Copy file", "Startup value", "Keylog file", "Take screenshot title", "Keylogger filter keywords", "Copy folder", "Keylog folder"]
 logger = logging.getLogger(__name__)
 
 
@@ -203,8 +203,6 @@ def extract_config(filebuf):
                         p_data[idx_list[i]] = cont.decode() # Inject custom process
                 elif i == 40:
                     p_data[idx_list[i]] = visibility_mode_list[int(chr(cont[0]))]
-                elif i == 42:
-                    p_data[idx_list[i]] = cont.decode("utf-16").strip("\x00")
                 elif i == 47:
                     p_data[idx_list[i]] = reaction_list[int(chr(cont[0]))]
                 elif i == 0:
@@ -217,7 +215,7 @@ def extract_config(filebuf):
 
             for k, v in p_data.items():
                 if k in utf_16_string_list:
-                    v = v.decode("utf16").strip("\00") if isinstance(v, bytes) else v
+                    v = v.decode("utf16").strip("\00") if isinstance(v, bytes) and b"\00" in v else v
                 config[k] = v
 
     except Exception as e:

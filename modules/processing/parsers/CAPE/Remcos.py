@@ -182,11 +182,11 @@ def extract_config(filebuf):
             p_data["Version"] = check_version(filebuf)
 
             if b"|\x1e\x1e\x1f|" in decrypted_data:
-                configs = decrypted_data.split(b"|\x1e\x1e\x1f|")
+                configs = decrypted_data.strip(b"|\x1e\x1e\x1f|").split(b"|\x1e\x1e\x1f|")
             elif b"\x1e" in decrypted_data:
-                configs = decrypted_data.split(b"\x1e")
+                configs = decrypted_data.strip(b"\x1e").split(b"\x1e")
             elif b"@@" in decrypted_data:
-                configs = decrypted_data.split(b"@@")
+                configs = decrypted_data.strip(b"@@").split(b"@@")
             else:
                 configs = [decrypted_data]
 

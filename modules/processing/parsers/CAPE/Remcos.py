@@ -181,7 +181,14 @@ def extract_config(filebuf):
             p_data = OrderedDict()
             p_data["Version"] = check_version(filebuf)
 
-            configs = re.split(rb"\|\x1e\x1e\x1f\|", decrypted_data)
+            if b"|\x1e\x1e\x1f|" in decrypted_data:
+                configs = decrypted_data.split(b"|\x1e\x1e\x1f|")
+            elif b"\x1e" in decrypted_data:
+                configs = decrypted_data.split(b"\x1e")
+            elif b"@@" in decrypted_data:
+                configs = decrypted_data.split(b"@@")
+            else:
+                configs = [decrypted_data]
 
             for i, cont in enumerate(configs):
                 if cont in (b"\x00", b"\x01"):

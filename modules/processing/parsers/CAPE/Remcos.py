@@ -211,7 +211,8 @@ def extract_config(filebuf):
                 elif i == 40:
                     p_data[idx_list[i]] = visibility_mode_list[int(chr(cont[0]))]
                 elif i == 47:
-                    p_data[idx_list[i]] = reaction_list[int(chr(cont[0]))]
+                    if cont:
+                        p_data[idx_list[i]] = reaction_list[int(chr(cont[0]))]
                 elif i == 0:
                     # various separators have been observed
                     separator = next((x for x in (b"|", b"\x1e", b"\xff\xff\xff\xff") if x in cont))

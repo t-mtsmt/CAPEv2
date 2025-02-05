@@ -200,7 +200,7 @@ def extract_config(filebuf):
                     else:
                         p_data[idx_list[i]] = setup_list[cont[0]]
                 elif i in (56, 57, 58):
-                    p_data[idx_list[i]] = base64.b64encode(cont)
+                    p_data[idx_list[i]] = base64.b64encode(cont).decode("utf8")
                 elif i == 13:
                     if cont == b"0":
                         p_data[idx_list[i]] = "No injection"
@@ -221,7 +221,7 @@ def extract_config(filebuf):
                         host, port, password = c2.split(b":")
                         p_data["Control"].append(f"tcp://{host.decode()}:{port.decode()}:{password.decode('utf8', 'backslashreplace')}")
                 else:
-                    p_data[idx_list[i]] = cont
+                    p_data[idx_list[i]] = cont.replace(b"\00", b"").decode("utf8")
 
             for k, v in p_data.items():
                 if k in utf_16_string_list:
